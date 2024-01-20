@@ -17,7 +17,7 @@ namespace OopsAllFlooded.Patches
         [HarmonyPostfix]
         static void FloodSpawnPatch() {
             Debug.Log("StartOfRound injection successful.");
-            FloodWeather flood = GameObject.FindObjectOfType<FloodWeather>();
+            FloodWeather flood = GameObject.FindObjectOfType<FloodWeather>(true);
             LevelWeatherType currentWeather = TimeOfDay.Instance.currentLevelWeather;
             float intensity = TimeOfDay.Instance.currentWeatherVariable2;
             int seed = StartOfRound.Instance.randomMapSeed;
@@ -28,7 +28,8 @@ namespace OopsAllFlooded.Patches
                 newFloodObj.name = "Flooding (Facility)";
                 facilityFlood = newFloodObj.GetComponent<FloodWeather>();
                 facilityFlood.transform.parent = flood.transform.parent;
-                facilityFlood.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable - 220, 0);
+                facilityFlood.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable - 230, 0);
+                Debug.Log(facilityFlood.transform.position);
                 facilityTrigger = facilityFlood.GetComponentInChildren<QuicksandTrigger>();
                 if (currentWeather == LevelWeatherType.Rainy || currentWeather == LevelWeatherType.Stormy) {
                     if (seed % 5 == 0) {
@@ -41,23 +42,41 @@ namespace OopsAllFlooded.Patches
                 Debug.Log("Flood hasn't spawned yet :(");
             }
         }
+
+        [HarmonyPatch("ShipHasLeft")]
+        [HarmonyPrefix]
+        static void FloodDisable() { // destroy the facility flooding when the main flood is disabled (end of round)
+            if (RoundPatch.facilityFlood != null) {
+                GameObject.Destroy(RoundPatch.facilityFlood.gameObject);
+            }
+        }
     }
     [HarmonyPatch(typeof(FloodWeather))]
     internal class FloodPatch {
         [HarmonyPatch("Update")]
         [HarmonyPrefix]
-        static void FloodLevelPatch(ref FloodWeather __instance) {
+        static bool FloodLevelPatch(ref FloodWeather __instance) {
             if (__instance == RoundPatch.facilityFlood) {
-                float y_pos = TimeOfDay.Instance.currentWeatherVariable - 230 + (__instance.floodLevelOffset * 7);
+                float effectiveFloodLevelOffset = Mathf.Clamp(__instance.floodLevelOffset, 0, 5);
+                float y_pos = TimeOfDay.Instance.currentWeatherVariable - 230 + (effectiveFloodLevelOffset * 7);
                 __instance.transform.position = Vector3.MoveTowards(__instance.transform.position, new Vector3(0f, y_pos, 0f), 0.5f * Time.deltaTime);
                 if (__instance.waterAudio != null) {
                     __instance.waterAudio.transform.position = new Vector3(GameNetworkManager.Instance.localPlayerController.transform.position.x, __instance.transform.position.y + 1f, GameNetworkManager.Instance.localPlayerController.transform.position.z);
                     float waterDistance = Vector3.Distance(GameNetworkManager.Instance.localPlayerController.transform.position, __instance.waterAudio.transform.position);
                     __instance.waterAudio.volume = Mathf.Lerp(__instance.waterAudio.volume, 3f - waterDistance, 0.1f);
                 }
-                return;
+                return false;
             }
+            return true;
         }
+
+        [HarmonyPatch("OnEnable")]
+        [HarmonyPostfix]
+        static void FloodLevelStart(ref FloodWeather __instance) {
+            __instance.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable - 230, 0);
+        }
+
+
     }
 
     [HarmonyPatch(typeof(QuicksandTrigger))]

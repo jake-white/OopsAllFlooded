@@ -1,0 +1,9 @@
+{
+    "name": "OopsAllFlooded",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/jake-white/OopsAllFlooded",
+    "description": "Slowly floods the facility interiors when the planet is flooded.",
+    "dependencies": [
+        "BepInEx-BepInExPack-5.4.2100"
+    ]
+}

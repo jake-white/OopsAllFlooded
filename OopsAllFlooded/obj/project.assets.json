@@ -164,11 +164,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
+      "projectUniqueName": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
       "projectName": "OopsAllFlooded",
-      "projectPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
+      "projectPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
       "packagesPath": "C:\\Users\\squir\\.nuget\\packages\\",
-      "outputPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\obj\\",
+      "outputPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [
