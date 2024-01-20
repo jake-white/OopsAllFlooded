@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "Lw43hkl8N6Sspot+prcw1WsZVn9ZUm/+04TLVPUNc7zTnZon4roWv2BfKaQGHl3l4UbDR5r9ZyI+slRip3RgCw==",
+  "success": true,
+  "projectFilePath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\squir\\.nuget\\packages\\bepinex.assemblypublicizer.msbuild\\0.4.1\\bepinex.assemblypublicizer.msbuild.0.4.1.nupkg.sha512"
+  ],
+  "logs": []
+}

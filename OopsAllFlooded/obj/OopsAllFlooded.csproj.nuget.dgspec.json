@@ -1,0 +1,56 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj": {}
+  },
+  "projects": {
+    "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
+        "projectName": "OopsAllFlooded",
+        "projectPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded.csproj",
+        "packagesPath": "C:\\Users\\squir\\.nuget\\packages\\",
+        "outputPath": "F:\\Gamedev\\Lethal Company\\OopsAllFlooded\\OopsAllFlooded\\OopsAllFlooded\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\squir\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "BepInEx.AssemblyPublicizer.MSBuild": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[0.4.1, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
