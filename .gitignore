@@ -1,5 +1,9 @@
 /OopsAllFlooded/bin/Debug/
 /OopsAllFlooded/bin/Release/
+/OopsAllFlooded/obj/
+/Build/oxymod
+Build.zip
 /Build/Build.zip
 /Build/OopsAllFlooded.dll
 /.vs/
+*.csproj

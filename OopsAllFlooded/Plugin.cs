@@ -1,11 +1,15 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using UnityEngine;
+using LethalLib.Modules;
 
 namespace OopsAllFlooded
 {
@@ -28,13 +32,20 @@ namespace OopsAllFlooded
 
             mls = BepInEx.Logging.Logger.CreateLogSource(modGUID);
 
+            string assetDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "oxymod");
+            AssetBundle bundle = AssetBundle.LoadFromFile(assetDir);
+
+            Item oxycanister = bundle.LoadAsset<Item>("Assets/OxyMod/OxyItem.asset");
+            NetworkPrefabs.RegisterNetworkPrefab(oxycanister.spawnPrefab);
+            Utilities.FixMixerGroups(oxycanister.spawnPrefab);
+            TerminalNode node = ScriptableObject.CreateInstance<TerminalNode>();
+            node.clearPreviousText = true;
+            node.displayText = "Limited air supply, useful for flooded facilities.";
+            Items.RegisterShopItem(oxycanister, null, null, node, 25);
+
             mls.LogInfo("Watch out for floods.");
 
             harmony.PatchAll();
-        }
-
-        void Start() {
-
         }
     }
 }
