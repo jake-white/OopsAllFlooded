@@ -28,7 +28,7 @@ namespace OopsAllFlooded.Patches
                 newFloodObj.name = "Flooding (Facility)";
                 facilityFlood = newFloodObj.GetComponent<FloodWeather>();
                 facilityFlood.transform.parent = flood.transform.parent;
-                facilityFlood.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable - 230, 0);
+                facilityFlood.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood, 0);
                 Debug.Log(facilityFlood.transform.position);
                 facilityTrigger = facilityFlood.GetComponentInChildren<QuicksandTrigger>();
                 if (currentWeather == LevelWeatherType.Rainy || currentWeather == LevelWeatherType.Stormy) {
@@ -53,12 +53,14 @@ namespace OopsAllFlooded.Patches
     }
     [HarmonyPatch(typeof(FloodWeather))]
     internal class FloodPatch {
+        public const float baseFlood = -225;
         [HarmonyPatch("Update")]
         [HarmonyPrefix]
         static bool FloodLevelPatch(ref FloodWeather __instance) {
             if (__instance == RoundPatch.facilityFlood) {
-                float effectiveFloodLevelOffset = Mathf.Clamp(__instance.floodLevelOffset, 0, 5);
-                float y_pos = TimeOfDay.Instance.currentWeatherVariable - 230 + (effectiveFloodLevelOffset * 7);
+                float effectiveFloodLevelOffset = Mathf.Clamp(__instance.floodLevelOffset, 2, 5);
+                float y_pos = TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood + (effectiveFloodLevelOffset * 4);
+                y_pos = Mathf.Clamp(y_pos, -225, -212);
                 __instance.transform.position = Vector3.MoveTowards(__instance.transform.position, new Vector3(0f, y_pos, 0f), 0.5f * Time.deltaTime);
                 if (__instance.waterAudio != null) {
                     __instance.waterAudio.transform.position = new Vector3(GameNetworkManager.Instance.localPlayerController.transform.position.x, __instance.transform.position.y + 1f, GameNetworkManager.Instance.localPlayerController.transform.position.z);
@@ -73,9 +75,10 @@ namespace OopsAllFlooded.Patches
         [HarmonyPatch("OnEnable")]
         [HarmonyPostfix]
         static void FloodLevelStart(ref FloodWeather __instance) {
-            __instance.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable - 230, 0);
+            if (__instance == RoundPatch.facilityFlood) {
+                __instance.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood, 0);
+            }
         }
-
 
     }
 
