@@ -19,7 +19,7 @@ namespace OopsAllFlooded
         private static TestClass instance;
         private const string modGUID = "squirrelboy.OopsAllFlooded";
         private const string modName = "Oops! All Flooded";
-        private const string modVersion = "0.1.1";
+        private const string modVersion = "0.1.3";
 
         private readonly Harmony harmony = new Harmony(modGUID);
 

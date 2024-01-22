@@ -16,19 +16,37 @@ namespace OopsAllFlooded.Patches
         [HarmonyPatch("OnShipLandedMiscEvents")]
         [HarmonyPostfix]
         static void FloodSpawnPatch() {
+            // flood driver
             Debug.Log("StartOfRound injection successful.");
             FloodWeather flood = GameObject.FindObjectOfType<FloodWeather>(true);
             LevelWeatherType currentWeather = TimeOfDay.Instance.currentLevelWeather;
-            float intensity = TimeOfDay.Instance.currentWeatherVariable2;
             int seed = StartOfRound.Instance.randomMapSeed;
             Debug.Log("Seed = " + seed);
+
+            // most common main entrance spawn is around -219, can be lower or higher
+            Vector3 mainEntrance = RoundManager.FindMainEntrancePosition(true, false);
+            FloodPatch.baseFlood = -225;
+            if (mainEntrance != null) {
+                Debug.Log("Found the main entrance at y = " + mainEntrance.y);
+                float possibleSpawn = mainEntrance.y - 6;
+                if (possibleSpawn < FloodPatch.baseFlood) {
+                    FloodPatch.baseFlood = possibleSpawn;
+                }
+            }
+            else {
+                Debug.Log("Could not find the main entrance, setting default flood level. If you're building a custom map contact squirrelboydev and let me know how to make this work with it :)");
+            }
+
+            FloodPatch.baseFlood += Mathf.Clamp(TimeOfDay.Instance.currentWeatherVariable, -10f, -3f);
+
+            // duplicating original flood object
             if (flood != null) {
                 GameObject floodObj = flood.gameObject;
                 GameObject newFloodObj = GameObject.Instantiate(floodObj);
                 newFloodObj.name = "Flooding (Facility)";
                 facilityFlood = newFloodObj.GetComponent<FloodWeather>();
                 facilityFlood.transform.parent = flood.transform.parent;
-                facilityFlood.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood, 0);
+                facilityFlood.transform.position = new Vector3(0, FloodPatch.baseFlood, 0);
                 Debug.Log(facilityFlood.transform.position);
                 facilityTrigger = facilityFlood.GetComponentInChildren<QuicksandTrigger>();
                 if (currentWeather == LevelWeatherType.Rainy || currentWeather == LevelWeatherType.Stormy) {
@@ -53,19 +71,19 @@ namespace OopsAllFlooded.Patches
     }
     [HarmonyPatch(typeof(FloodWeather))]
     internal class FloodPatch {
-        public const float baseFlood = -225;
+        public static float baseFlood;
         [HarmonyPatch("Update")]
         [HarmonyPrefix]
         static bool FloodLevelPatch(ref FloodWeather __instance) {
             if (__instance == RoundPatch.facilityFlood) {
                 float effectiveFloodLevelOffset = Mathf.Clamp(__instance.floodLevelOffset, 2, 5);
-                float y_pos = TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood + (effectiveFloodLevelOffset * 4);
+                float y_pos = FloodPatch.baseFlood + (effectiveFloodLevelOffset * 4);
                 y_pos = Mathf.Clamp(y_pos, -225, -212);
                 __instance.transform.position = Vector3.MoveTowards(__instance.transform.position, new Vector3(0f, y_pos, 0f), 0.5f * Time.deltaTime);
                 if (__instance.waterAudio != null) {
                     __instance.waterAudio.transform.position = new Vector3(GameNetworkManager.Instance.localPlayerController.transform.position.x, __instance.transform.position.y + 1f, GameNetworkManager.Instance.localPlayerController.transform.position.z);
                     float waterDistance = Vector3.Distance(GameNetworkManager.Instance.localPlayerController.transform.position, __instance.waterAudio.transform.position);
-                    __instance.waterAudio.volume = Mathf.Lerp(__instance.waterAudio.volume, 3f - waterDistance, 0.1f);
+                    __instance.waterAudio.volume = Mathf.Lerp(__instance.waterAudio.volume, (5-waterDistance)/20, 0.1f);
                 }
                 return false;
             }
@@ -76,7 +94,7 @@ namespace OopsAllFlooded.Patches
         [HarmonyPostfix]
         static void FloodLevelStart(ref FloodWeather __instance) {
             if (__instance == RoundPatch.facilityFlood) {
-                __instance.transform.position = new Vector3(0, TimeOfDay.Instance.currentWeatherVariable + FloodPatch.baseFlood, 0);
+                __instance.transform.position = new Vector3(0, FloodPatch.baseFlood, 0);
             }
         }
 

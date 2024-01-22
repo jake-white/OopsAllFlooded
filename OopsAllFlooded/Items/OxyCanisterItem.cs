@@ -45,6 +45,9 @@ namespace OopsAllFlooded.Patches
                     }
                     if (previousPlayerHeldBy.isUnderwater) {
                         previousPlayerHeldBy.sprintMeter = Mathf.Clamp(previousPlayerHeldBy.sprintMeter + (Time.deltaTime * 0.1f), 0f, 1.25f);
+                        if (previousPlayerHeldBy.sprintMeter > 0.2f) {
+                            previousPlayerHeldBy.isExhausted = false;
+                        }
                     }
                 }
             }
